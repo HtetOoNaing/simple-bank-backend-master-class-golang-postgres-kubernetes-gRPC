@@ -32,3 +32,8 @@ func RandomString(n int) string {
 func RandomOwner() string {
 	return RandomString(6)
 }
+
+// RandomMoney generates a randon amount of money
+func RandomMoney() int64 {
+	return RandomInt(0, 1000)
+}
