@@ -2,6 +2,7 @@ package api
 
 import (
 	"net/http"
+	"time"
 
 	db "github.com/HtetOoNaing/simple-bank-backend-master-class-golang-postgres-kubernetes-gRPC/db/sqlc"
 	"github.com/HtetOoNaing/simple-bank-backend-master-class-golang-postgres-kubernetes-gRPC/util"
@@ -14,6 +15,14 @@ type createUserRequest struct {
 	Password string `json:"password" binding:"required,min=6"`
 	FullName string `json:"full_name" binding:"required"`
 	Email    string `json:"email" binding:"required,email"`
+}
+
+type createUserResponse struct {
+	Username          string    `json:"username"`
+	FullName          string    `json:"full_name"`
+	Email             string    `json:"email"`
+	PasswordChangedAt time.Time `json:"password_change_at"`
+	CreatedAt         time.Time `json:"created_at"`
 }
 
 func (server *Server) createUser(ctx *gin.Context) {
@@ -51,5 +60,14 @@ func (server *Server) createUser(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	ctx.JSON(http.StatusOK, user)
+
+	rsp := createUserResponse{
+		Username:          user.Username,
+		FullName:          user.FullName,
+		Email:             user.Email,
+		PasswordChangedAt: user.PasswordChangedAt,
+		CreatedAt:         user.CreatedAt,
+	}
+
+	ctx.JSON(http.StatusOK, rsp)
 }
