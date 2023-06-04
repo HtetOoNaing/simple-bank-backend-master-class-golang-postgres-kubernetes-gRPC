@@ -26,12 +26,16 @@ func NewServer(config util.Config, store db.Store) (*Server, error) {
 		return nil, fmt.Errorf("cannot create token maker: %w", err)
 	}
 	server := &Server{store: store, tokenMaker: tokenMaker, config: config}
-	router := gin.Default()
 
 	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
 		v.RegisterValidation("currency", validCurrency)
 	}
+	server.setupRouter()
+	return server, nil
+}
 
+func (server *Server) setupRouter() {
+	router := gin.Default()
 	// add routes to router
 	router.POST("/accounts", server.createAccount)
 	router.GET("/accounts/:id", server.getAccount)
@@ -45,7 +49,6 @@ func NewServer(config util.Config, store db.Store) (*Server, error) {
 	router.POST("/users/login", server.loginUser)
 
 	server.router = router
-	return server, nil
 }
 
 // Start runs the HTTP server on a specific address
