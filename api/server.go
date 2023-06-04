@@ -42,6 +42,7 @@ func NewServer(config util.Config, store db.Store) (*Server, error) {
 
 	// users
 	router.POST("/users", server.createUser)
+	router.POST("/users/login", server.loginUser)
 
 	server.router = router
 	return server, nil
